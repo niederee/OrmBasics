@@ -21,5 +21,13 @@ namespace OrmBasics.Tests
             Assert.IsTrue("Hello".Equals(result, System.StringComparison.Ordinal));
             #endregion
         }
+
+        [TestMethod] 
+        public void OrmDatabaseService_GetConnection_ShouldWork()
+        {
+            var service = new OrmDatabaseService();
+            var connection = service.GetDatabaseConnection();
+            Assert.IsFalse(string.IsNullOrEmpty(connection));
+        }
     }
 }
