@@ -8,9 +8,10 @@ namespace OrmBasics.Services
 {
     public class OrmDatabaseService
     {
-        public string GetDatabaseConnection()
+        public Npgsql.NpgsqlConnection GetDatabaseConnection()
         {
-            return Environment.GetEnvironmentVariable("orm_connection", EnvironmentVariableTarget.User);
+            var connectionString = Environment.GetEnvironmentVariable("orm_connection", EnvironmentVariableTarget.User);
+            return new Npgsql.NpgsqlConnection(connectionString);
         }
     }
 }
