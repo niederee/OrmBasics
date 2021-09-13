@@ -27,7 +27,7 @@ namespace OrmBasics.Tests
         {
             var service = new OrmDatabaseService();
             var connection = service.GetDatabaseConnection();
-            Assert.IsFalse(string.IsNullOrEmpty(connection));
+            Assert.IsFalse(connection == default);
         }
     }
 }
