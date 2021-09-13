@@ -22,11 +22,7 @@ namespace OrmBasics.Services
         public List<(string firstName, string lastName)> GetAccountOwners()
         {
             List<(string firstName, string lastName)> accountOwners = new();
-            connection.OpenConnection();
-            using var command = new NpgsqlCommand(Sql.GetAccountOwners, connection);
-            var reader = command.ExecuteReader();
-            var dataTable = new DataTable();
-            dataTable.Load(reader);
+            using var dataTable = Sql.GetAccountOwners.GetDataTable(connection);
             foreach(DataRow row in dataTable.Rows)
             {
                 accountOwners.Add((row.Field<string>("first_name"), row.Field<string>("last_name")));
@@ -37,6 +33,7 @@ namespace OrmBasics.Services
         private static class Sql
         {
             public static string GetAccountOwners = "Select * from account_owner";
+            public static string SomeOtherQuery = "Select something from something";
         }
 
         

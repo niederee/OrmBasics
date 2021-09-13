@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Common;
 using System.Linq;
 using System.Text;
@@ -15,6 +16,17 @@ namespace OrmBasics
             {
                 connection.Open();
             }
+        }
+
+        public static DataTable GetDataTable(this string sql, DbConnection connection)
+        {
+            var command = connection.CreateCommand();
+            command.CommandText = sql;
+            connection.OpenConnection();
+            using var reader = command.ExecuteReader();
+            using var dataTable = new DataTable();
+            dataTable.Load(reader);
+            return dataTable;
         }
     }
 }
