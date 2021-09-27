@@ -35,14 +35,23 @@ namespace OrmBasics.Services
         public IEnumerable<AccountOwner> GetAccountOwnersOrm()
         {
             Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
-            var owners = connection.Query<AccountOwner>(Sql.GetAccountOwners);
-            foreach(var owner in owners)
-            {
-                Console.WriteLine($"{owner.FirstName} {owner.LastName}");
-            }
-
-            return owners;
+            return connection.Query<AccountOwner>(Sql.GetAccountOwners);
+           
         }
+        public IEnumerable<AccountOwner> FindUsersWhoseNameMatchesAPattern(string pattern) {
+            var accountowners = GetAccountOwnersOrm();
+            var matchingitems = new List<AccountOwner>();
+            foreach (var item in accountowners)
+            {
+                if (item.LastName.Contains(pattern, StringComparison.OrdinalIgnoreCase))
+                {
+                    matchingitems.Add(item);
+                }
+            }
+            return matchingitems;
+
+        }
+
 
         private static class Sql
         {

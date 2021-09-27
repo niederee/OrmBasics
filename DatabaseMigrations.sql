@@ -21,5 +21,5 @@ account_created_date date
 );
 
 insert into account_owner values('Mike', 'Smith', '2020-10-05');
-
+insert into account_owner values('David', 'Gallup', '2020-11-05');
 grant select on account_owner to orm_user;
