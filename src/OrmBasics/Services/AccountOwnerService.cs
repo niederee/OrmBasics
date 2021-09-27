@@ -1,4 +1,6 @@
-﻿using Npgsql;
+﻿using Dapper;
+using Npgsql;
+using OrmBasics.Model;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -28,6 +30,18 @@ namespace OrmBasics.Services
                 accountOwners.Add((row.Field<string>("first_name"), row.Field<string>("last_name")));
             }
             return accountOwners;
+        }
+
+        public IEnumerable<AccountOwner> GetAccountOwnersOrm()
+        {
+            Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
+            var owners = connection.Query<AccountOwner>(Sql.GetAccountOwners);
+            foreach(var owner in owners)
+            {
+                Console.WriteLine($"{owner.FirstName} {owner.LastName}");
+            }
+
+            return owners;
         }
 
         private static class Sql
