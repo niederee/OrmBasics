@@ -20,5 +20,21 @@ namespace OrmBasics.Tests
             Assert.IsTrue(items.Count() > 0);
         }
 
+        [TestMethod]
+        public void AccountOwnerService_GetAccountOwnersOrm_Works()
+        {
+            var databaseService = new OrmDatabaseService();
+            var accountOwnerService = new AccountOwnerService(databaseService);
+            var items = accountOwnerService.GetAccountOwnersOrm();
+            Assert.IsTrue(items.Count() > 0);
+        }
+        [TestMethod]
+        public void AccountOwnerService_FindUsersWhoseNameMatchesAPattern_Works()
+        {
+            var databaseService = new OrmDatabaseService();
+            var accountOwnerService = new AccountOwnerService(databaseService);
+            var items = accountOwnerService.FindUsersWhoseNameMatchesAPattern("smith");
+            Assert.IsTrue(items.Count() > 0);
+        }
     }
 }

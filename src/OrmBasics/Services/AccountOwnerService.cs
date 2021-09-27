@@ -1,4 +1,6 @@
-﻿using Npgsql;
+﻿using Dapper;
+using Npgsql;
+using OrmBasics.Model;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -29,6 +31,27 @@ namespace OrmBasics.Services
             }
             return accountOwners;
         }
+
+        public IEnumerable<AccountOwner> GetAccountOwnersOrm()
+        {
+            Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
+            return connection.Query<AccountOwner>(Sql.GetAccountOwners);
+           
+        }
+        public IEnumerable<AccountOwner> FindUsersWhoseNameMatchesAPattern(string pattern) {
+            var accountowners = GetAccountOwnersOrm();
+            var matchingitems = new List<AccountOwner>();
+            foreach (var item in accountowners)
+            {
+                if (item.LastName.Contains(pattern, StringComparison.OrdinalIgnoreCase))
+                {
+                    matchingitems.Add(item);
+                }
+            }
+            return matchingitems;
+
+        }
+
 
         private static class Sql
         {
