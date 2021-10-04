@@ -51,7 +51,10 @@ namespace OrmBasics.Services
             return matchingitems;
 
         }
-
+        public IEnumerable<AccountOwner> FindUsersWhoesNameMatchesLinq(string pattern)
+        {
+            return GetAccountOwnersOrm().Where(item => item.LastName.Contains(pattern, StringComparison.OrdinalIgnoreCase)).ToList();
+        }
 
         private static class Sql
         {

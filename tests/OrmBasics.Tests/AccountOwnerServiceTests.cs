@@ -36,5 +36,13 @@ namespace OrmBasics.Tests
             var items = accountOwnerService.FindUsersWhoseNameMatchesAPattern("smith");
             Assert.IsTrue(items.Count() > 0);
         }
+        [TestMethod]
+        public void AccountOwnerService_FindUsersWhoseNameMatchesAPatternlinq_Works()
+        {
+            var databaseService = new OrmDatabaseService();
+            var accountOwnerService = new AccountOwnerService(databaseService);
+            var items = accountOwnerService.FindUsersWhoesNameMatchesLinq("smith");
+            Assert.IsTrue(items.Count() > 0);
+        }
     }
 }
