@@ -18,4 +18,4 @@ jobs:
       with:
         dotnet-version: 5.0.x
     - name: Cover
-      run: dotnet run --project tools\Build\Build.csproj --targets cover
+      run: dotnet run --project tools/Build/Build.csproj --targets cover
