@@ -8,10 +8,8 @@ using System.Threading.Tasks;
 
 namespace OrmBasics.Tests
 {
-    [TestClass]
     public class AccountOwnerServiceTests
     {
-        [TestMethod]
         public void AccountOwnerService_GetAccountOwners_Works()
         {
             var databaseService = new OrmDatabaseService();
@@ -20,7 +18,6 @@ namespace OrmBasics.Tests
             Assert.IsTrue(items.Count() > 0);
         }
 
-        [TestMethod]
         public void AccountOwnerService_GetAccountOwnersOrm_Works()
         {
             var databaseService = new OrmDatabaseService();
@@ -28,7 +25,7 @@ namespace OrmBasics.Tests
             var items = accountOwnerService.GetAccountOwnersOrm();
             Assert.IsTrue(items.Count() > 0);
         }
-        [TestMethod]
+
         public void AccountOwnerService_FindUsersWhoseNameMatchesAPattern_Works()
         {
             var databaseService = new OrmDatabaseService();
@@ -36,7 +33,7 @@ namespace OrmBasics.Tests
             var items = accountOwnerService.FindUsersWhoseNameMatchesAPattern("smith");
             Assert.IsTrue(items.Count() > 0);
         }
-        [TestMethod]
+
         public void AccountOwnerService_FindUsersWhoseNameMatchesAPatternlinq_Works()
         {
             var databaseService = new OrmDatabaseService();

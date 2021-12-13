@@ -23,7 +23,8 @@ public class Program
     {
         Directory.SetCurrentDirectory(GetSolutionDirectory());
         Target("clean", () => DotNetClean());
-        Target("restore", DependsOn("clean"), () => DotNetClean());
+        Target("cleanBuild", DependsOn("clean"), () => CleanProjectStuff());
+        Target("restore", DependsOn("cleanBuild"), () => DotNetClean());
         Target("test", DependsOn("restore"), () => Test());
         Target("cover", DependsOn("test"), () => GenerateTestCoverage());
         string[] Targets = _options.Targets?.Count() > 0 ? _options.Targets.ToArray() : new string[] { "default" };
@@ -101,6 +102,22 @@ public class Program
     {
         string proj = string.IsNullOrEmpty(projectFile) ? string.Empty : $" {projectFile.TrimStart()}";
         Command.Run("dotnet", $"clean{proj} --verbosity {_options.Verbosity} --nologo");
+    }
+
+    private static void CleanProjectStuff()
+    {
+        var folders = new string[]
+        {
+            "projectTests"
+        };
+        foreach(var folder in folders)
+        {
+            var fqdn = Path.Combine(Directory.GetCurrentDirectory(), folder);
+            if(Directory.Exists(fqdn))
+            {
+                Directory.Delete(fqdn, true);
+            }
+        }
     }
 
     private static string GetSolutionDirectory()
