@@ -77,7 +77,7 @@ public class Program
 
     private static void Test()
     {
-        foreach (var project in new DirectoryInfo(Path.Combine(Directory.GetCurrentDirectory(), "tests\\")).GetFiles("*.csproj", SearchOption.AllDirectories))
+        foreach (var project in new DirectoryInfo(Path.Combine(Directory.GetCurrentDirectory(), "tests")).GetFiles("*.csproj", SearchOption.AllDirectories))
         {
             DotNetTest(project.FullName);
         }
