@@ -9,7 +9,7 @@ public class Program
 {
     private static CommandLineArguments _options;
 
-    public static void Main(params string[] args)
+    public static void Main(params string[] args) 
     {
         var options = Parser.Default.ParseArguments<CommandLineArguments>(args);
         _options = new CommandLineArguments();
@@ -57,10 +57,20 @@ public class Program
         return new DirectoryInfo(directory).GetFiles("reportgenerator.exe", SearchOption.AllDirectories).First();
     }
 
-    private static void DotNetToolInstall(string installPath, string tool, string source = "https://api.nuget.org/v3/index.json")
+    private static void DotNetToolInstall(string installPath, string tool, string source = "https://api.nuget.org/v3/index.json", bool ignoreErrors = true)
     {
-        Command.Run("dotnet",
-            $"tool install --tool-path \"{new DirectoryInfo(installPath).FullName}\" {tool} --add-source {source} --ignore-failed-sources");
+        try
+        {
+            Command.Run("dotnet",
+                $"tool install --tool-path \"{new DirectoryInfo(installPath).FullName}\" {tool} --add-source {source} --ignore-failed-sources");
+        }
+        catch
+        {
+            if(!ignoreErrors)
+            {
+                throw;
+            }
+        }
     }
 
     private static void Test()
