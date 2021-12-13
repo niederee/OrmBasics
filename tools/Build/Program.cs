@@ -11,7 +11,7 @@ public class Program
 {
     private static CommandLineArguments _options;
 
-    public static void Main(params string[] args) 
+    public static void Main(params string[] args)
     {
         var options = Parser.Default.ParseArguments<CommandLineArguments>(args);
         _options = new CommandLineArguments();
@@ -45,7 +45,7 @@ public class Program
     private static void GenerateTestCoverage(string directory = "coverage", string reportTypes = "HtmlInline")
     {
         var reportGenerator = InstallReportGenerator();
-        var reportPath = Path.Combine(Directory.GetCurrentDirectory(), "projectTests\\**\\coverage.opencover.xml");
+        var reportPath = Path.Combine(Directory.GetCurrentDirectory(), "projectTests", "**", "coverage.opencover.xml");
         foreach (var reportType in reportTypes.Split(','))
         {
             Command.Run(reportGenerator.FullName,
@@ -69,7 +69,7 @@ public class Program
         }
         catch
         {
-            if(!ignoreErrors)
+            if (!ignoreErrors)
             {
                 throw;
             }
@@ -110,10 +110,10 @@ public class Program
         {
             "projectTests"
         };
-        foreach(var folder in folders)
+        foreach (var folder in folders)
         {
             var fqdn = Path.Combine(Directory.GetCurrentDirectory(), folder);
-            if(Directory.Exists(fqdn))
+            if (Directory.Exists(fqdn))
             {
                 Directory.Delete(fqdn, true);
             }
