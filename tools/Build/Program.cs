@@ -4,6 +4,8 @@ using Bullseye;
 using CommandLine;
 using static Bullseye.Targets;
 using SimpleExec;
+using System.IO;
+using System.Linq;
 
 public class Program
 {
