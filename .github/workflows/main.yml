@@ -29,14 +29,14 @@ jobs:
     - name: LineCoverage
       uses: actions/upload-artifact@v2.3.0
       with:
-        name: coverage/badge_linecoverage.svg
-        path: LineCoverage
+        name: LineCoverage
+        path: coverage/badge_linecoverage.svg
         if-no-files-found: error 
         retention-days: 90
     - name: BranchCoverage
       uses: actions/upload-artifact@v2.3.0
       with:
-        name: coverage/badge_branchcoverage.svg
-        path: BranchCoverage
+        name: BranchCoverage
+        path: coverage/badge_branchcoverage.svg
         if-no-files-found: error 
         retention-days: 90        
