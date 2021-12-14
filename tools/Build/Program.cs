@@ -49,7 +49,7 @@ public class Program
         foreach (var reportType in reportTypes.Split(','))
         {
             Command.Run(reportGenerator.FullName,
-                $"-reports:\"{reportPath}\" -targetdir:\"{directory}\" -reporttypes:{reportType}");
+                $"\"-reports:{reportPath}\" \"-targetdir:{directory}\" -reporttypes:{reportType}");
 
         }
     }
