@@ -6,6 +6,7 @@ using static Bullseye.Targets;
 using SimpleExec;
 using System.IO;
 using System.Linq;
+using System;
 
 public class Program
 {
@@ -46,6 +47,7 @@ public class Program
     {
         var reportGenerator = InstallReportGenerator();
         var reportPath = Path.Combine(Directory.GetCurrentDirectory(), "projectTests", "**", "coverage.opencover.xml");
+        Console.WriteLine("here");
         foreach (var reportType in reportTypes.Split(','))
         {
             Command.Run(reportGenerator.FullName,
