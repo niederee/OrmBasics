@@ -26,3 +26,17 @@ jobs:
         path: CodeCoverage
         if-no-files-found: error 
         retention-days: 90
+    - name: LineCoverage
+      uses: actions/upload-artifact@v2.3.0
+      with:
+        name: coverage/badge_linecoverage.svg
+        path: LineCoverage
+        if-no-files-found: error 
+        retention-days: 90
+    - name: BranchCoverage
+      uses: actions/upload-artifact@v2.3.0
+      with:
+        name: coverage/badge_branchcoverage.svg
+        path: BranchCoverage
+        if-no-files-found: error 
+        retention-days: 90        
