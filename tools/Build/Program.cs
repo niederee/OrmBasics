@@ -59,7 +59,7 @@ public class Program
     private static FileInfo InstallReportGenerator(string directory = "testTools")
     {
         DotNetToolInstall(directory, "dotnet-reportgenerator-globaltool");
-        return new DirectoryInfo(directory).GetFiles("reportgenerator.exe", SearchOption.AllDirectories).First();
+        return new DirectoryInfo(Directory.GetCurrentDirectory()).GetFiles("reportgenerator.exe", SearchOption.AllDirectories).First();
     }
 
     private static void DotNetToolInstall(string installPath, string tool, string source = "https://api.nuget.org/v3/index.json", bool ignoreErrors = true)
