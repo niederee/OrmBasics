@@ -56,28 +56,6 @@ public class Program
         }
     }
 
-    private static FileInfo InstallReportGenerator(string directory = "testTools")
-    {
-        DotNetToolInstall(directory, "dotnet-reportgenerator-globaltool");
-        return new DirectoryInfo(Directory.GetCurrentDirectory()).GetFiles("reportgenerator.exe", SearchOption.AllDirectories).First();
-    }
-
-    private static void DotNetToolInstall(string installPath, string tool, string source = "https://api.nuget.org/v3/index.json", bool ignoreErrors = true)
-    {
-        try
-        {
-            Command.Run("dotnet",
-                $"tool install --tool-path \"{new DirectoryInfo(installPath).FullName}\" {tool} --add-source {source} --ignore-failed-sources");
-        }
-        catch
-        {
-            if (!ignoreErrors)
-            {
-                throw;
-            }
-        }
-    }
-
     private static void Test()
     {
         foreach (var project in new DirectoryInfo(Path.Combine(Directory.GetCurrentDirectory(), "tests")).GetFiles("*.csproj", SearchOption.AllDirectories))
