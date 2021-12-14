@@ -1,0 +1,28 @@
+name: CodeCoverage
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+    - name: Cover
+      run: dotnet run --project tools/Build/Build.csproj --targets cover
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v2.3.0
+      with:
+        name: coverage
+        path: CodeCoverage
+        if-no-files-found: error 
+        retention-days: 90
