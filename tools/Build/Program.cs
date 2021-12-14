@@ -44,7 +44,7 @@ public class Program
         });
     }
 
-    private static void GenerateTestCoverage(string directory = "coverage", string reportTypes = "HtmlInline")
+    private static void GenerateTestCoverage(string directory = "CodeCoverage", string reportTypes = "HtmlInline,Badges")
     {
         var reportGeneratorDll = new DirectoryInfo(Directory.GetCurrentDirectory()).GetFiles("ReportGenerator.dll", SearchOption.AllDirectories).Where(a=> a.FullName.Contains("net5.0")).First();
         var reportPath = Path.Combine(Directory.GetCurrentDirectory(), "projectTests", "**", "coverage.opencover.xml");
