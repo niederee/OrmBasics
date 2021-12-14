@@ -25,8 +25,9 @@ public class Program
         Directory.SetCurrentDirectory(GetSolutionDirectory());
         Target("clean", () => DotNetClean());
         Target("cleanBuild", DependsOn("clean"), () => CleanProjectStuff());
-        Target("restore", DependsOn("cleanBuild"), () => DotNetClean());
-        Target("test", DependsOn("restore"), () => Test());
+        Target("restore", DependsOn("cleanBuild"), () => DotNetRestore());
+        Target("restoreBuild", DependsOn("restore"), () => DotNetRestore("tools/Build/Build.csproj"));
+        Target("test", DependsOn("restoreBuild"), () => Test());
         Target("cover", DependsOn("test"), () => GenerateTestCoverage());
         string[] Targets = _options.Targets?.Count() > 0 ? _options.Targets.ToArray() : new string[] { "default" };
         RunTargetsAndExit(Targets, new Options
@@ -45,13 +46,12 @@ public class Program
 
     private static void GenerateTestCoverage(string directory = "coverage", string reportTypes = "HtmlInline")
     {
-        var reportGenerator = InstallReportGenerator();
+        var reportGeneratorDll = new DirectoryInfo(Directory.GetCurrentDirectory()).GetFiles("ReportGenerator.dll", SearchOption.AllDirectories).Where(a=> a.FullName.Contains("net6.0")).First();
         var reportPath = Path.Combine(Directory.GetCurrentDirectory(), "projectTests", "**", "coverage.opencover.xml");
-        Console.WriteLine("here");
         foreach (var reportType in reportTypes.Split(','))
         {
-            Command.Run(reportGenerator.FullName,
-                $"\"-reports:{reportPath}\" \"-targetdir:{directory}\" -reporttypes:{reportType}");
+            Command.Run("dotnet",
+                $"{reportGeneratorDll.FullName} \"-reports:{reportPath}\" \"-targetdir:{directory}\" -reporttypes:{reportType}");
 
         }
     }
@@ -93,7 +93,7 @@ public class Program
             $"test{proj} --logger \"trx;v=d\" -c Debug -r projectTests --collect:\"XPlat Code Coverage\" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.ExcludeByAttribute=\"CodeCoverageIgnore\" --verbosity {_options.Verbosity}");
     }
 
-    private static void DotNetRestore(string? projectFile = null, string source = "https://api.nuget.org/v3/index.json", string packageLocation = "pacages")
+    private static void DotNetRestore(string? projectFile = null, string source = "https://api.nuget.org/v3/index.json", string packageLocation = "packages")
     {
         string proj = string.IsNullOrEmpty(projectFile) ? string.Empty : $" {projectFile.TrimStart()}";
         Command.Run("dotnet",
