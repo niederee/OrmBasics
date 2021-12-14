@@ -4,6 +4,9 @@ using Bullseye;
 using CommandLine;
 using static Bullseye.Targets;
 using SimpleExec;
+using System.IO;
+using System.Linq;
+using System;
 
 public class Program
 {
@@ -21,8 +24,10 @@ public class Program
     {
         Directory.SetCurrentDirectory(GetSolutionDirectory());
         Target("clean", () => DotNetClean());
-        Target("restore", DependsOn("clean"), () => DotNetClean());
-        Target("test", DependsOn("restore"), () => Test());
+        Target("cleanBuild", DependsOn("clean"), () => CleanProjectStuff());
+        Target("restore", DependsOn("cleanBuild"), () => DotNetRestore());
+        Target("restoreBuild", DependsOn("restore"), () => DotNetRestore("tools/Build/Build.csproj"));
+        Target("test", DependsOn("restoreBuild"), () => Test());
         Target("cover", DependsOn("test"), () => GenerateTestCoverage());
         string[] Targets = _options.Targets?.Count() > 0 ? _options.Targets.ToArray() : new string[] { "default" };
         RunTargetsAndExit(Targets, new Options
@@ -39,33 +44,21 @@ public class Program
         });
     }
 
-    private static void GenerateTestCoverage(string directory = "coverage", string reportTypes = "HtmlInline")
+    private static void GenerateTestCoverage(string directory = "CodeCoverage", string reportTypes = "HtmlInline,Badges")
     {
-        var reportGenerator = InstallReportGenerator();
-        var reportPath = Path.Combine(Directory.GetCurrentDirectory(), "projectTests\\**\\coverage.opencover.xml");
+        var reportGeneratorDll = new DirectoryInfo(Directory.GetCurrentDirectory()).GetFiles("ReportGenerator.dll", SearchOption.AllDirectories).Where(a=> a.FullName.Contains("net5.0")).First();
+        var reportPath = Path.Combine(Directory.GetCurrentDirectory(), "projectTests", "**", "coverage.opencover.xml");
         foreach (var reportType in reportTypes.Split(','))
         {
-            Command.Run(reportGenerator.FullName,
-                $"-reports:\"{reportPath}\" -targetdir:\"{directory}\" -reporttypes:{reportType}");
+            Command.Run("dotnet",
+                $"{reportGeneratorDll.FullName} \"-reports:{reportPath}\" \"-targetdir:{directory}\" -reporttypes:{reportType}");
 
         }
     }
 
-    private static FileInfo InstallReportGenerator(string directory = "testTools")
-    {
-        DotNetToolInstall(directory, "dotnet-reportgenerator-globaltool");
-        return new DirectoryInfo(directory).GetFiles("reportgenerator.exe", SearchOption.AllDirectories).First();
-    }
-
-    private static void DotNetToolInstall(string installPath, string tool, string source = "https://api.nuget.org/v3/index.json")
-    {
-        Command.Run("dotnet",
-            $"tool install --tool-path \"{new DirectoryInfo(installPath).FullName}\" {tool} --add-source {source} --ignore-failed-sources");
-    }
-
     private static void Test()
     {
-        foreach (var project in new DirectoryInfo(Path.Combine(Directory.GetCurrentDirectory(), "tests\\")).GetFiles("*.csproj", SearchOption.AllDirectories))
+        foreach (var project in new DirectoryInfo(Path.Combine(Directory.GetCurrentDirectory(), "tests")).GetFiles("*.csproj", SearchOption.AllDirectories))
         {
             DotNetTest(project.FullName);
         }
@@ -78,7 +71,7 @@ public class Program
             $"test{proj} --logger \"trx;v=d\" -c Debug -r projectTests --collect:\"XPlat Code Coverage\" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.ExcludeByAttribute=\"CodeCoverageIgnore\" --verbosity {_options.Verbosity}");
     }
 
-    private static void DotNetRestore(string? projectFile = null, string source = "https://api.nuget.org/v3/index.json", string packageLocation = "pacages")
+    private static void DotNetRestore(string? projectFile = null, string source = "https://api.nuget.org/v3/index.json", string packageLocation = "packages")
     {
         string proj = string.IsNullOrEmpty(projectFile) ? string.Empty : $" {projectFile.TrimStart()}";
         Command.Run("dotnet",
@@ -89,6 +82,22 @@ public class Program
     {
         string proj = string.IsNullOrEmpty(projectFile) ? string.Empty : $" {projectFile.TrimStart()}";
         Command.Run("dotnet", $"clean{proj} --verbosity {_options.Verbosity} --nologo");
+    }
+
+    private static void CleanProjectStuff()
+    {
+        var folders = new string[]
+        {
+            "projectTests"
+        };
+        foreach (var folder in folders)
+        {
+            var fqdn = Path.Combine(Directory.GetCurrentDirectory(), folder);
+            if (Directory.Exists(fqdn))
+            {
+                Directory.Delete(fqdn, true);
+            }
+        }
     }
 
     private static string GetSolutionDirectory()

@@ -22,7 +22,6 @@ namespace OrmBasics.Tests
             #endregion
         }
 
-        [TestMethod] 
         public void OrmDatabaseService_GetConnection_ShouldWork()
         {
             var service = new OrmDatabaseService();
