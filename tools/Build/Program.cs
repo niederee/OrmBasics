@@ -46,7 +46,7 @@ public class Program
 
     private static void GenerateTestCoverage(string directory = "coverage", string reportTypes = "HtmlInline")
     {
-        var reportGeneratorDll = new DirectoryInfo(Directory.GetCurrentDirectory()).GetFiles("ReportGenerator.dll", SearchOption.AllDirectories).Where(a=> a.FullName.Contains("net6.0")).First();
+        var reportGeneratorDll = new DirectoryInfo(Directory.GetCurrentDirectory()).GetFiles("ReportGenerator.dll", SearchOption.AllDirectories).Where(a=> a.FullName.Contains("net5.0")).First();
         var reportPath = Path.Combine(Directory.GetCurrentDirectory(), "projectTests", "**", "coverage.opencover.xml");
         foreach (var reportType in reportTypes.Split(','))
         {
